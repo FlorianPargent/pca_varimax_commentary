@@ -1,0 +1,252 @@
+---
+title: "Electronic Supplemental Material: PCA + Varimax Commentary"
+author: "Florian Pargent & David Goretzko"
+format: html
+editor: visual
+---
+
+## Item Response Data
+
+```{r}
+#| message: false
+library(vsp)
+library(Matrix)
+library(rethinking)
+
+phonedata_items <- read.csv2("datasets/Items.csv")
+phonedata_items <- na.omit(phonedata_items[, 3:302])
+```
+
+```{r}
+items_mat = as.matrix(phonedata_items)
+colnames(items_mat) = colnames(phonedata_items)
+items_mat = as(items_mat, "dgCMatrix")
+screeplot(vsp(items_mat, rank = 50,
+  degree_normalize = TRUE, center = FALSE))
+```
+
+```{r}
+pca_items = vsp(items_mat, rank = 5,
+  degree_normalize = TRUE, center = FALSE)
+pairs(as.matrix(pca_items$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated factors (no standardization)")
+```
+
+```{r}
+top_vars_items = data.frame(
+  Conscientiousness = names(sort(abs(pca_items$Y[, 1]), decreasing = TRUE)[1:10]),
+  Extraversion = names(sort(abs(pca_items$Y[, 2]), decreasing = TRUE)[1:10]),
+  Agreeableness = names(sort(abs(pca_items$Y[, 3]), decreasing = TRUE)[1:10]),
+  EmotionalStability = names(sort(abs(pca_items$Y[, 4]), decreasing = TRUE)[1:10]),
+  Openness = names(sort(abs(pca_items$Y[, 5]), decreasing = TRUE)[1:10])
+)
+top_vars_items
+```
+
+```{r}
+items_mat_z = as.matrix(scale(phonedata_items))
+colnames(items_mat_z) = colnames(phonedata_items)
+items_mat_z = as(items_mat_z, "dgCMatrix")
+screeplot(vsp(items_mat_z, rank = 50,
+  degree_normalize = FALSE, center = FALSE))
+```
+
+```{r}
+pca_items_z = vsp(items_mat_z, rank = 5,
+  degree_normalize = FALSE, center = FALSE)
+pairs(as.matrix(pca_items_z$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated factors (no standardization)")
+```
+
+```{r}
+top_vars_items_z = data.frame(
+  Extraversion = names(sort(abs(pca_items_z$Y[, 1]), decreasing = TRUE)[1:10]),
+  Conscientiousness = names(sort(abs(pca_items_z$Y[, 2]), decreasing = TRUE)[1:10]),
+  Agreeableness = names(sort(abs(pca_items_z$Y[, 3]), decreasing = TRUE)[1:10]),
+  EmotionalStability = names(sort(abs(pca_items_z$Y[, 4]), decreasing = TRUE)[1:10]),
+  Openness = names(sort(abs(pca_items_z$Y[, 5]), decreasing = TRUE)[1:10])
+)
+top_vars_items_z
+```
+
+## Mobile Sensing Data
+
+```{r}
+#| message: false
+library(vsp)
+library(Matrix)
+library(mlr3verse)
+library(psych)
+library(rethinking)
+
+phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
+phonedata_sensing = phonedata_sensing[, c(1:1821, 1837)]
+
+task_sensing = as_task_regr(phonedata_sensing, id = "Sociability_Regr",
+  target = "E2.Sociableness")
+po = po("imputehist")
+set.seed(2)
+imp_task_sensing = po$train(list(task = task_sensing))[[1]]
+phonedata_sensing = imp_task_sensing$data()
+phonedata_sensing = phonedata_sensing[, 2:1822] # ATTENTION: mlr3 changes variable order!
+```
+
+```{r}
+sensing_mat = as.matrix(phonedata_sensing)
+colnames(sensing_mat) = colnames(phonedata_sensing)
+sensing_mat = as(sensing_mat, "dgCMatrix")
+screeplot(vsp(sensing_mat, rank = 50,
+  degree_normalize = TRUE, center = TRUE))
+```
+
+```{r}
+pca_sensing = vsp(sensing_mat, rank = 5,
+  degree_normalize = TRUE, center = TRUE)
+pairs(as.matrix(pca_sensing$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated factors (no standardization)")
+```
+
+```{r}
+top_vars = data.frame(
+  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:10]),
+  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:10]),
+  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:10]),
+  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:10]),
+  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:10])
+)
+top_vars
+```
+
+```{r}
+sensing_mat_z = as.matrix(scale(phonedata_sensing))
+colnames(sensing_mat_z) = colnames(phonedata_sensing)
+sensing_mat_z = as(sensing_mat_z, "dgCMatrix")
+screeplot(vsp(sensing_mat_z, rank = 50, 
+  degree_normalize = FALSE, center = TRUE))
+```
+
+```{r}
+pca_sensing_z = vsp(sensing_mat_z, rank = 5, 
+  degree_normalize = FALSE, center = TRUE)
+pairs(as.matrix(pca_sensing_z$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated factors (with standardization)")
+```
+
+```{r}
+top_vars_z = data.frame(
+  Apps_Unique = names(sort(abs(pca_sensing_z$Y[, 1]), decreasing = TRUE)[1:10]),
+  Calls = names(sort(abs(pca_sensing_z$Y[, 2]), decreasing = TRUE)[1:10]),
+  Music = names(sort(abs(pca_sensing_z$Y[, 3]), decreasing = TRUE)[1:10]),
+  Terrain = names(sort(abs(pca_sensing_z$Y[, 4]), decreasing = TRUE)[1:10]),
+  Apps_Photos = names(sort(abs(pca_sensing_z$Y[, 5]), decreasing = TRUE)[1:10])
+)
+top_vars_z
+```
+
+## Correlated Factors Simulation
+
+Simulate correlated factor scores from a multivariate exponential distribution
+
+```{r}
+#| message: false
+library(rethinking)
+library(semTools)
+library(mvtnorm)
+library(vsp)
+
+set.seed(1)
+
+n = 10000
+r = 0.7
+Z = scale(matrix(sample(c(-1,1), 2*n, T)*rexp(n*2, rate = 2)^1.3, ncol = 2))
+cor_mat = matrix(c(1, r, r, 1), ncol = 2)
+
+Z_star = Z %*% chol(cor_mat)
+pairs(Z_star, cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "True correlated factors")
+```
+
+Simulate item response data
+
+```{r}
+k = 2
+vpf = 20
+d = vpf*k
+
+rho = 0
+pf = "high"
+sf = "none"
+
+loadings <- function(k, d, vpf, pf, sf){
+  
+  switch(pf,
+    "low" = {
+      pf_low = 0.35
+      pf_upper = 0.5
+    },
+    "medium" = {
+      pf_low = 0.5
+      pf_upper = 0.65
+    },
+    "high" = {
+      pf_low = 0.8
+      pf_upper = 0.95
+    })
+  switch(sf,
+    "none" = {
+      sf_low = 0
+      sf_upper = 0
+    },
+    "low" = {
+      sf_low = 0
+      sf_upper = 0.1
+    },
+    "medium" = {
+      sf_low = 0.2
+      sf_upper = 0.5
+    })
+  
+  x <- runif(d, pf_low, pf_upper)
+  y <- runif(d*(k-1) , sf_low, sf_upper)
+  
+  i <- 1:(d)
+  
+  j <- rep(1:k, each=vpf)
+  
+  L <- matrix(NA, d, k)
+  L[cbind(i, j)] <- x
+  L[is.na(L)] <- y
+  L
+}
+
+L = loadings(k, d, vpf, pf, sf)
+A =  Z_star %*% t(L) + rnorm(n * d, sd = 0.1)
+dim(A)
+```
+
+Perform PCA + Varimax
+
+```{r}
+pca_sim = vsp(A, rank = 2, degree_normalize = FALSE)
+```
+
+Estimate uncorrelated factor scores $Z$
+
+```{r}
+pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated uncorrelated factors")
+```
+
+Estimate correlated factor scores $Z^*$
+
+```{r}
+Z_star_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
+pairs(Z_star_hat, cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated uncorrelated factors")
+```
+
+Estimate factor correlation ($r = `r r`$)
+
+```{r}
+cor(as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B))
+```
