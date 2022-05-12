@@ -123,13 +123,34 @@ pairs(as.matrix(pca_sensing$Y[, 1:5]), cex = 0.5, col = col.alpha("red", alpha =
 
 ```{r}
 top_vars = data.frame(
-  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:10]),
-  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:10]),
-  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:10]),
-  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:10]),
-  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:10])
+  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:20]),
+  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:20]),
+  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:20]),
+  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:20]),
+  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:20])
 )
 top_vars
+```
+
+```{r}
+red_vars = unique(unlist(top_vars))
+sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
+colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, ..red_vars])
+sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
+screeplot(vsp(sensing_mat_z_red, rank = 20,
+  degree_normalize = FALSE, center = TRUE))
+```
+
+```{r}
+pca_sensing_z_red = vsp(sensing_mat_z_red, rank = 2, 
+  degree_normalize = FALSE, center = TRUE)
+pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+  main = "Estimated factors (reduced itemset with standardization)")
+```
+
+```{r}
+pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.6), 
+  main = "Estimated loadings (reduced itemset with standardization)")
 ```
 
 ```{r}
