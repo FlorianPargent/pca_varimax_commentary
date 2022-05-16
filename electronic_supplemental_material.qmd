@@ -457,6 +457,10 @@ cor(as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B))
 ```
 
 
+# Summary Commentary
+
+While R&Z’s results are highly relevant for widespread applications of PCA+VMR, details might differ in psychology which could profit from better understanding of the $B$ matrix, and how to estimate oblique factors and loadings.
+
 ### References
 
 ::: {#refs}

@@ -1,6 +1,6 @@
 ---
 title: "New Insights into PCA + Varimax for Psychological Researchers"
-author: "Florian Pargent & David Goretzko"
+author: "Florian Pargent, Timo von Oertzen, & David Goretzko"
 format: pdf
 bibliography: references.bib
 csl: elsevier-vancouver.csl
@@ -10,21 +10,12 @@ editor: visual
 ```{r}
 #| echo: false
 #| message: false
-library(mlr3verse)
-
-phonedata_items <- read.csv2("datasets/Items.csv")
-phonedata_items <- na.omit(phonedata_items[, 3:302])
-
+phonedata_items = read.csv2("datasets/Items.csv")
+phonedata_items = na.omit(phonedata_items[, 3:302])
 phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
-phonedata_sensing = phonedata_sensing[, c(1:1821, 1837)]
-
-task_sensing = as_task_regr(phonedata_sensing, id = "Sociability_Regr",
-  target = "E2.Sociableness")
-po = po("imputehist")
-set.seed(2)
-imp_task_sensing = po$train(list(task = task_sensing))[[1]]
-phonedata_sensing = imp_task_sensing$data()
-phonedata_sensing = phonedata_sensing[, 2:1822]
+phonedata_sensing = phonedata_sensing[, c(1:1821)]
+# phonedata_sensing = phonedata_sensing[, 
+#   sapply(phonedata_sensing, function(x) !anyNA(x))]
 ```
 
 Rohe & Zeng (R&Z; @rohe2022vintage) proof what many psychologists have suspected but is dismissed by the literature: Principal component analysis in combination with Varimax rotation (PCA+VMR\; @kaiser1958varimax) *does* estimate factor scores in latent variable models. The factor indeterminacy problem which plagues VMR since its invention only applies for the special case of (multivariate) normally distributed factors. For any other distribution, perfect factor indeterminacy does not apply, although identifiability might be weak. However, distributions producing factors which are sparse or have a high kurtosis fulfill a *sufficient* leptokurtic condition, which enables PCA+VMR to estimate factors, and can be confirmed by simple diagnostics [@thurstone1947multiple].
