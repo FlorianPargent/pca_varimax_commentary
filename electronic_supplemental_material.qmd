@@ -86,20 +86,28 @@ top_vars_items_z
 ```{r}
 #| message: false
 library(vsp)
+library(scales)
 library(Matrix)
-library(mlr3verse)
+library(miceFast)
+library(data.table)
 
 phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
-phonedata_sensing = phonedata_sensing[, c(1:1821, 1837)]
+phonedata_sensing = phonedata_sensing[, c(1:1821)]
+phonedata_sensing = as.data.table(phonedata_sensing)
 
-task_sensing = as_task_regr(phonedata_sensing, id = "Sociability_Regr",
-  target = "E2.Sociableness")
-po = po("imputehist")
-set.seed(2)
-imp_task_sensing = po$train(list(task = task_sensing))[[1]]
-phonedata_sensing = imp_task_sensing$data()
-phonedata_sensing = phonedata_sensing[, 2:1822] # ATTENTION: mlr3 changes variable order!
+na_cnames = colnames(phonedata_sensing)[
+  phonedata_sensing[, sapply(.SD, anyNA)]]
+notna_cnames = setdiff(colnames(phonedata_sensing), na_cnames)
+
+for (i in na_cnames) {
+  phonedata_sensing[, c(i) := fill_NA_N(x = .SD,
+  model = "pmm",
+  posit_y = i,
+  posit_x = sample(notna_cnames, size = 10),
+  k = 10)]
+}
 ```
+
 
 ```{r}
 sensing_mat = as.matrix(phonedata_sensing)
