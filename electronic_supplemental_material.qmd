@@ -11,10 +11,10 @@ editor: visual
 #| message: false
 library(vsp)
 library(Matrix)
-library(rethinking)
+library(scales)
 
-phonedata_items <- read.csv2("datasets/Items.csv")
-phonedata_items <- na.omit(phonedata_items[, 3:302])
+phonedata_items = read.csv2("datasets/Items.csv")
+phonedata_items = na.omit(phonedata_items[, 3:302])
 ```
 
 ```{r}
@@ -28,22 +28,23 @@ screeplot(vsp(items_mat, rank = 50,
 ```{r}
 pca_items = vsp(items_mat, rank = 5,
   degree_normalize = TRUE, center = FALSE)
-pairs(as.matrix(pca_items$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_items$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (no standardization)")
 ```
 
 ```{r}
-pairs(as.matrix(pca_items$Y[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.3), 
+pairs(as.matrix(pca_items$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.3), 
   main = "Estimated loadings (no standardization)")
 ```
 
 ```{r}
+n = 10
 top_vars_items = data.frame(
-  Conscientiousness = names(sort(abs(pca_items$Y[, 1]), decreasing = TRUE)[1:10]),
-  Extraversion = names(sort(abs(pca_items$Y[, 2]), decreasing = TRUE)[1:10]),
-  Agreeableness = names(sort(abs(pca_items$Y[, 3]), decreasing = TRUE)[1:10]),
-  EmotionalStability = names(sort(abs(pca_items$Y[, 4]), decreasing = TRUE)[1:10]),
-  Openness = names(sort(abs(pca_items$Y[, 5]), decreasing = TRUE)[1:10])
+  Conscientiousness = names(sort(abs(pca_items$Y[, 1]), decreasing = TRUE)[1:n]),
+  Extraversion = names(sort(abs(pca_items$Y[, 2]), decreasing = TRUE)[1:n]),
+  Agreeableness = names(sort(abs(pca_items$Y[, 3]), decreasing = TRUE)[1:n]),
+  EmotionalStability = names(sort(abs(pca_items$Y[, 4]), decreasing = TRUE)[1:n]),
+  Openness = names(sort(abs(pca_items$Y[, 5]), decreasing = TRUE)[1:n])
 )
 top_vars_items
 ```
@@ -59,22 +60,23 @@ screeplot(vsp(items_mat_z, rank = 50,
 ```{r}
 pca_items_z = vsp(items_mat_z, rank = 5,
   degree_normalize = FALSE, center = FALSE)
-pairs(as.matrix(pca_items_z$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_items_z$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (with standardization)")
 ```
 
 ```{r}
-pairs(as.matrix(pca_items_z$Y[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.3), 
+pairs(as.matrix(pca_items_z$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.3), 
   main = "Estimated loadings (with standardization)")
 ```
 
 ```{r}
+n = 10
 top_vars_items_z = data.frame(
-  Extraversion = names(sort(abs(pca_items_z$Y[, 1]), decreasing = TRUE)[1:10]),
-  Conscientiousness = names(sort(abs(pca_items_z$Y[, 2]), decreasing = TRUE)[1:10]),
-  Agreeableness = names(sort(abs(pca_items_z$Y[, 3]), decreasing = TRUE)[1:10]),
-  EmotionalStability = names(sort(abs(pca_items_z$Y[, 4]), decreasing = TRUE)[1:10]),
-  Openness = names(sort(abs(pca_items_z$Y[, 5]), decreasing = TRUE)[1:10])
+  Extraversion = names(sort(abs(pca_items_z$Y[, 1]), decreasing = TRUE)[1:n]),
+  Conscientiousness = names(sort(abs(pca_items_z$Y[, 2]), decreasing = TRUE)[1:n]),
+  Agreeableness = names(sort(abs(pca_items_z$Y[, 3]), decreasing = TRUE)[1:n]),
+  EmotionalStability = names(sort(abs(pca_items_z$Y[, 4]), decreasing = TRUE)[1:n]),
+  Openness = names(sort(abs(pca_items_z$Y[, 5]), decreasing = TRUE)[1:n])
 )
 top_vars_items_z
 ```
@@ -86,8 +88,6 @@ top_vars_items_z
 library(vsp)
 library(Matrix)
 library(mlr3verse)
-library(psych)
-library(rethinking)
 
 phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
 phonedata_sensing = phonedata_sensing[, c(1:1821, 1837)]
@@ -112,28 +112,31 @@ screeplot(vsp(sensing_mat, rank = 50,
 ```{r}
 pca_sensing = vsp(sensing_mat, rank = 5,
   degree_normalize = TRUE, center = TRUE)
-pairs(as.matrix(pca_sensing$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_sensing$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (no standardization)")
 ```
 
 ```{r}
-pairs(as.matrix(pca_sensing$Y[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.4), 
+pairs(as.matrix(pca_sensing$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.4), 
   main = "Estimated loadings (no standardization)")
 ```
 
 ```{r}
+n = 20
 top_vars = data.frame(
-  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:20]),
-  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:20]),
-  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:20]),
-  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:20]),
-  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:20])
+  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:n]),
+  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:n]),
+  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:n]),
+  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:n]),
+  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:n])
 )
+red_vars = unique(unlist(top_vars))
 top_vars
 ```
 
+Combining the top `r n` items loading on all components results in only `r length(red_vars)` unique variables. 
+
 ```{r}
-red_vars = unique(unlist(top_vars))
 sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
 colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, ..red_vars])
 sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
@@ -144,12 +147,12 @@ screeplot(vsp(sensing_mat_z_red, rank = 20,
 ```{r}
 pca_sensing_z_red = vsp(sensing_mat_z_red, rank = 2, 
   degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (reduced itemset with standardization)")
 ```
 
 ```{r}
-pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.6), 
+pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.6), 
   main = "Estimated loadings (reduced itemset with standardization)")
 ```
 
@@ -164,22 +167,23 @@ screeplot(vsp(sensing_mat_z, rank = 50,
 ```{r}
 pca_sensing_z = vsp(sensing_mat_z, rank = 5, 
   degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_z$Z[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_sensing_z$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (with standardization)")
 ```
 
 ```{r}
-pairs(as.matrix(pca_sensing_z$Y[, 1:5]), cex = 0.5, col = col.alpha("red", alpha = 0.4), 
+pairs(as.matrix(pca_sensing_z$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.4), 
   main = "Estimated loadings (with standardization)")
 ```
 
 ```{r}
+n = 10
 top_vars_z = data.frame(
-  Apps_Unique = names(sort(abs(pca_sensing_z$Y[, 1]), decreasing = TRUE)[1:10]),
-  Calls = names(sort(abs(pca_sensing_z$Y[, 2]), decreasing = TRUE)[1:10]),
-  Music = names(sort(abs(pca_sensing_z$Y[, 3]), decreasing = TRUE)[1:10]),
-  Terrain = names(sort(abs(pca_sensing_z$Y[, 4]), decreasing = TRUE)[1:10]),
-  Apps_Photos = names(sort(abs(pca_sensing_z$Y[, 5]), decreasing = TRUE)[1:10])
+  Apps_Unique = names(sort(abs(pca_sensing_z$Y[, 1]), decreasing = TRUE)[1:n]),
+  Calls = names(sort(abs(pca_sensing_z$Y[, 2]), decreasing = TRUE)[1:n]),
+  Music = names(sort(abs(pca_sensing_z$Y[, 3]), decreasing = TRUE)[1:n]),
+  Terrain = names(sort(abs(pca_sensing_z$Y[, 4]), decreasing = TRUE)[1:n]),
+  Apps_Photos = names(sort(abs(pca_sensing_z$Y[, 5]), decreasing = TRUE)[1:n])
 )
 top_vars_z
 ```
@@ -190,10 +194,9 @@ Simulate correlated factor scores from a multivariate exponential distribution
 
 ```{r}
 #| message: false
-library(rethinking)
-library(semTools)
-library(mvtnorm)
 library(vsp)
+library(mvtnorm)
+
 
 set.seed(1)
 
@@ -203,7 +206,7 @@ Z = scale(matrix(sample(c(-1,1), 2*n, T)*rexp(n*2, rate = 2)^1.3, ncol = 2))
 cor_mat = matrix(c(1, r, r, 1), ncol = 2)
 
 Z_star = Z %*% chol(cor_mat)
-pairs(Z_star, cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(Z_star, cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "True correlated factors")
 ```
 
@@ -218,7 +221,7 @@ rho = 0
 pf = "high"
 sf = "none"
 
-loadings <- function(k, d, vpf, pf, sf){
+loadings = function(k, d, vpf, pf, sf){
   
   switch(pf,
     "low" = {
@@ -247,16 +250,16 @@ loadings <- function(k, d, vpf, pf, sf){
       sf_upper = 0.5
     })
   
-  x <- runif(d, pf_low, pf_upper)
-  y <- runif(d*(k-1) , sf_low, sf_upper)
+  x = runif(d, pf_low, pf_upper)
+  y = runif(d*(k-1) , sf_low, sf_upper)
   
-  i <- 1:(d)
+  i = 1:(d)
   
-  j <- rep(1:k, each=vpf)
+  j = rep(1:k, each=vpf)
   
-  L <- matrix(NA, d, k)
-  L[cbind(i, j)] <- x
-  L[is.na(L)] <- y
+  L = matrix(NA, d, k)
+  L[cbind(i, j)] = x
+  L[is.na(L)] = y
   L
 }
 
@@ -274,7 +277,7 @@ pca_sim = vsp(A, rank = 2, degree_normalize = FALSE)
 Estimate uncorrelated factor scores $Z$
 
 ```{r}
-pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated uncorrelated factors")
 ```
 
@@ -282,7 +285,7 @@ Estimate correlated factor scores $Z^*$
 
 ```{r}
 Z_star_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
-pairs(Z_star_hat, cex = 0.5, col = col.alpha("red", alpha = 0.2), 
+pairs(Z_star_hat, cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated uncorrelated factors")
 ```
 
