@@ -1,7 +1,9 @@
 ---
 title: "Electronic Supplemental Material: PCA + Varimax Commentary"
 author: "Florian Pargent & David Goretzko"
-format: html
+format: 
+  html:
+    toc: true
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 editor: visual
@@ -12,12 +14,35 @@ editor: visual
 library(vsp)
 library(Matrix)
 library(scales)
-library(miceRanger)
 library(data.table)
 library(mvtnorm)
 ```
 
+# Short Summary of Rohe & Zheng (2022)
+
+Rohe & Zeng (R&Z; @rohe2022vintage) proof what many psychologists have suspected but is dismissed by the literature: Principal component analysis in combination with Varimax rotation (PCA+VMR\; @kaiser1958varimax) *does* estimate factor scores in latent variable models.
+The factor indeterminacy problem which plagues VMR since its invention only applies for the special case of (multivariate) normally distributed factors.
+For any other distribution, perfect factor indeterminacy does not apply, although identifiability might be weak.
+However, distributions producing factors which are sparse or have a high kurtosis fulfill a *sufficient* leptokurtic condition, which enables PCA+VMR to estimate factors, and can be confirmed by simple diagnostics [@thurstone1947multiple].
+
+As psychologists, we appreciate new insights into “vintage” PCA+VMR, which is still widely used for developing and evaluating psychological tests and questionnaires [@fokkema2017how].
+From our experience, it is frustrating to teach factor analysis and rotational indeterminacy, followed by demonstrations of the effectiveness of PCA+VMR in analyzing the structure of psychological questionnaires.
+Despite practical success, the literature has fought against the use of PCA+VMR in favor of more complex exploratory factor analysis and oblique rotation methods.
+R&Z show that simple PCA+VMR performs the same inference.
+However, their technical paper is difficult to read for psychological researchers, which is why we summarize the most important aspects in this commentary:
+
+# Data Example: PhoneStudy
+
+In contrast to the examples in R&Z which only deal with sparse binary network data, psychological applications (traditionally) deal with i) questionnaire items or (increasingly) ii) digital data, e.g., mobile sensing.
+The $A$ matrix consists of i) integer-valued responses on $d$ Likert items or ii) continuous values on $d$ sensing variables, by $n$ persons.
+Degree normalization discussed by R&Q seems not suitable here and z-standardization is often required to detect meaningful factors in practice.
+We also do not share R&Z’s enthusiasm that "radial streaks" are common.
+
+Here we analyze data from the PhoneStudy [@stachl2020predicting].
+
 ## Item Response Data
+
+### No standardization
 
 ```{r}
 #| message: false
@@ -57,6 +82,8 @@ top_vars_items = data.frame(
 top_vars_items
 ```
 
+### With standardization
+
 ```{r}
 items_mat_z = as.matrix(scale(phonedata_items))
 colnames(items_mat_z) = colnames(phonedata_items)
@@ -91,21 +118,15 @@ top_vars_items_z
 
 ## Mobile Sensing Data
 
-```{r}
-#| include: false
-#| eval: false
-phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
-phonedata_sensing = phonedata_sensing[, c(1:1821)]
-set.seed(42)
-mice_obj = miceRanger(phonedata_sensing, m = 1, maxiter = 5, 
-  valueSelector = "meanMatch", verbose = FALSE)
-saveRDS(mice_obj, file = "mice_obj.RDS")
-```
+### Complete observations
+
+#### No standardization
 
 ```{r}
-#| message: false
-mice_obj = readRDS(file = "mice_obj.RDS")
-phonedata_sensing = completeData(mice_obj)[[1]]
+phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
+phonedata_sensing = phonedata_sensing[, c(1:1821)]
+phonedata_sensing = phonedata_sensing[, 
+  sapply(phonedata_sensing, function(x) !anyNA(x))]
 ```
 
 ```{r}
@@ -145,8 +166,8 @@ The resulting factors are hard to interpret because they do not have a simple st
 The top `r n` items loading on all components include only `r length(red_vars)` unique variables. 
 
 ```{r}
-sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
-colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, ..red_vars])
+sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, red_vars]))
+colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, red_vars])
 sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
 screeplot(vsp(sensing_mat_z_red, rank = 20,
   degree_normalize = FALSE, center = TRUE))
@@ -196,7 +217,138 @@ top_vars_z = data.frame(
 top_vars_z
 ```
 
-## Correlated Factors Simulation
+### Imputed data
+
+Mean imputation
+
+```{r}
+phonedata_sensing_imp = readRDS(file = "datasets/clusterdata.RDS")
+phonedata_sensing_imp = phonedata_sensing_imp[, c(1:1821)]
+for(col in colnames(phonedata_sensing_imp)) {
+  set(phonedata_sensing_imp, i = which(is.na(phonedata_sensing_imp[[col]])), 
+    j = col, value = mean(phonedata_sensing_imp[[col]], na.rm = TRUE))
+}
+```
+
+Comment: The following findings are quite similar with more elaborate imputation techniques.
+
+```{r}
+#| eval: false
+library(miceRanger)
+phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
+phonedata_sensing = phonedata_sensing[, c(1:1821)]
+set.seed(42)
+mice_obj_sensing = miceRanger(phonedata_sensing, m = 1, maxiter = 1, 
+  valueSelector = "meanMatch", verbose = FALSE)
+saveRDS(mice_obj_sensing, file = "mice_obj_sensing.RDS")
+```
+
+```{r}
+#| eval: false
+library(miceRanger)
+mice_obj_sensing = readRDS(file = "mice_obj_sensing.RDS")
+phonedata_sensing_imp = completeData(mice_obj_sensing)[[1]]
+```
+
+
+#### No standardization
+
+```{r}
+sensing_mat_imp = as.matrix(phonedata_sensing_imp)
+colnames(sensing_mat_imp) = colnames(phonedata_sensing_imp)
+sensing_mat_imp = as(sensing_mat_imp, "dgCMatrix")
+screeplot(vsp(sensing_mat_imp, rank = 50,
+  degree_normalize = TRUE, center = TRUE))
+```
+
+```{r}
+pca_sensing_imp = vsp(sensing_mat_imp, rank = 5,
+  degree_normalize = TRUE, center = TRUE)
+pairs(as.matrix(pca_sensing_imp$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
+  main = "Estimated factors (no standardization)")
+```
+
+```{r}
+pairs(as.matrix(pca_sensing_imp$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.4), 
+  main = "Estimated loadings (no standardization)")
+```
+
+```{r}
+n = 20
+top_vars = data.frame(
+  GPS1 = names(sort(abs(pca_sensing_imp$Y[, 1]), decreasing = TRUE)[1:n]),
+  GPS2 = names(sort(abs(pca_sensing_imp$Y[, 2]), decreasing = TRUE)[1:n]),
+  GPS3 = names(sort(abs(pca_sensing_imp$Y[, 3]), decreasing = TRUE)[1:n]),
+  GPS4 = names(sort(abs(pca_sensing_imp$Y[, 4]), decreasing = TRUE)[1:n]),
+  GPS5 = names(sort(abs(pca_sensing_imp$Y[, 5]), decreasing = TRUE)[1:n])
+)
+red_vars = unique(unlist(top_vars))
+top_vars
+```
+
+The resulting factors are hard to interpret because they do not have a simple structure.
+The top `r n` items loading on all components include only `r length(red_vars)` unique variables. 
+
+```{r}
+#| eval: false
+sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
+colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, ..red_vars])
+sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
+screeplot(vsp(sensing_mat_z_red, rank = 20,
+  degree_normalize = FALSE, center = TRUE))
+```
+
+```{r}
+#| eval: false
+pca_sensing_z_red = vsp(sensing_mat_z_red, rank = 2, 
+  degree_normalize = FALSE, center = TRUE)
+pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
+  main = "Estimated factors (reduced itemset with standardization)")
+```
+
+```{r}
+#| eval: false
+pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.6), 
+  main = "Estimated loadings (reduced itemset with standardization)")
+```
+
+#### With standardization
+
+```{r}
+sensing_mat_imp_z = as.matrix(scale(phonedata_sensing_imp))
+colnames(sensing_mat_imp_z) = colnames(phonedata_sensing_imp)
+sensing_mat_imp_z = as(sensing_mat_imp_z, "dgCMatrix")
+screeplot(vsp(sensing_mat_imp_z, rank = 50, 
+  degree_normalize = FALSE, center = TRUE))
+```
+
+```{r}
+pca_sensing_imp_z = vsp(sensing_mat_imp_z, rank = 5, 
+  degree_normalize = FALSE, center = TRUE)
+pairs(as.matrix(pca_sensing_imp_z$Z[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
+  main = "Estimated factors (with standardization)")
+```
+
+```{r}
+pairs(as.matrix(pca_sensing_imp_z$Y[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
+  main = "Estimated loadings (with standardization)")
+```
+
+```{r}
+n = 10
+top_vars_z = data.frame(
+  Apps_Unique = names(sort(abs(pca_sensing_imp_z$Y[, 1]), decreasing = TRUE)[1:n]),
+  Calls = names(sort(abs(pca_sensing_imp_z$Y[, 2]), decreasing = TRUE)[1:n]),
+  Music = names(sort(abs(pca_sensing_imp_z$Y[, 3]), decreasing = TRUE)[1:n]),
+  Terrain = names(sort(abs(pca_sensing_imp_z$Y[, 4]), decreasing = TRUE)[1:n]),
+  Apps_Photos = names(sort(abs(pca_sensing_imp_z$Y[, 5]), decreasing = TRUE)[1:n])
+)
+top_vars_z
+```
+
+## Summary Data Example
+
+# Correlated Factors Simulation
 
 Another important aspect of psychological applications are correlated factors (e.g. personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
 Interestingly, R&Z hint that in their semi-parametric factor model, their extension of PCA+VMR might be used to also estimate correlated factors.
