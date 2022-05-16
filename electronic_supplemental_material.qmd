@@ -2,17 +2,25 @@
 title: "Electronic Supplemental Material: PCA + Varimax Commentary"
 author: "Florian Pargent & David Goretzko"
 format: html
+bibliography: references.bib
+csl: elsevier-vancouver.csl
 editor: visual
 ---
-
-## Item Response Data
 
 ```{r}
 #| message: false
 library(vsp)
 library(Matrix)
 library(scales)
+library(miceRanger)
+library(data.table)
+library(mvtnorm)
+```
 
+## Item Response Data
+
+```{r}
+#| message: false
 phonedata_items = read.csv2("datasets/Items.csv")
 phonedata_items = na.omit(phonedata_items[, 3:302])
 ```
@@ -84,30 +92,21 @@ top_vars_items_z
 ## Mobile Sensing Data
 
 ```{r}
-#| message: false
-library(vsp)
-library(scales)
-library(Matrix)
-library(miceFast)
-library(data.table)
-
+#| include: false
+#| eval: false
 phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
 phonedata_sensing = phonedata_sensing[, c(1:1821)]
-phonedata_sensing = as.data.table(phonedata_sensing)
-
-na_cnames = colnames(phonedata_sensing)[
-  phonedata_sensing[, sapply(.SD, anyNA)]]
-notna_cnames = setdiff(colnames(phonedata_sensing), na_cnames)
-
-for (i in na_cnames) {
-  phonedata_sensing[, c(i) := fill_NA_N(x = .SD,
-  model = "pmm",
-  posit_y = i,
-  posit_x = sample(notna_cnames, size = 10),
-  k = 10)]
-}
+set.seed(42)
+mice_obj = miceRanger(phonedata_sensing, m = 1, maxiter = 5, 
+  valueSelector = "meanMatch", verbose = FALSE)
+saveRDS(mice_obj, file = "mice_obj.RDS")
 ```
 
+```{r}
+#| message: false
+mice_obj = readRDS(file = "mice_obj.RDS")
+phonedata_sensing = completeData(mice_obj)[[1]]
+```
 
 ```{r}
 sensing_mat = as.matrix(phonedata_sensing)
@@ -142,7 +141,8 @@ red_vars = unique(unlist(top_vars))
 top_vars
 ```
 
-Combining the top `r n` items loading on all components results in only `r length(red_vars)` unique variables. 
+The resulting factors are hard to interpret because they do not have a simple structure.
+The top `r n` items loading on all components include only `r length(red_vars)` unique variables. 
 
 ```{r}
 sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
@@ -198,19 +198,20 @@ top_vars_z
 
 ## Correlated Factors Simulation
 
-Simulate correlated factor scores from a multivariate exponential distribution
+Another important aspect of psychological applications are correlated factors (e.g. personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
+Interestingly, R&Z hint that in their semi-parametric factor model, their extension of PCA+VMR might be used to also estimate correlated factors.
+Here we demonstrate that $\hat{Z}\hat{B}$ correctly estimates correlated factors simulated from a leptokurtic distribution.
+
+1. Simulate correlated factor scores from a multivariate leptokurtic distribution.
 
 ```{r}
 #| message: false
-library(vsp)
-library(mvtnorm)
-
-
-set.seed(1)
+set.seed(42)
 
 n = 10000
 r = 0.7
-Z = scale(matrix(sample(c(-1,1), 2*n, T)*rexp(n*2, rate = 2)^1.3, ncol = 2))
+# adapted from https://github.com/RoheLab/vsp-paper/blob/master/scripts/makeFigure1.R
+Z = scale(matrix(sample(c(-1,1), 2*n, T) * rexp(n*2, rate = 2)^1.3, ncol = 2))
 cor_mat = matrix(c(1, r, r, 1), ncol = 2)
 
 Z_star = Z %*% chol(cor_mat)
@@ -218,7 +219,7 @@ pairs(Z_star, cex = 0.5, col = alpha("red", alpha = 0.2),
   main = "True correlated factors")
 ```
 
-Simulate item response data
+2. Simulate item response data.
 
 ```{r}
 k = 2
@@ -276,20 +277,20 @@ A =  Z_star %*% t(L) + rnorm(n * d, sd = 0.1)
 dim(A)
 ```
 
-Perform PCA + Varimax
+3. Perform PCA + Varimax
 
 ```{r}
 pca_sim = vsp(A, rank = 2, degree_normalize = FALSE)
 ```
 
-Estimate uncorrelated factor scores $Z$
+4. Estimate uncorrelated factor scores $Z$
 
 ```{r}
 pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated uncorrelated factors")
 ```
 
-Estimate correlated factor scores $Z^*$
+5. Estimate correlated factor scores $Z^*$
 
 ```{r}
 Z_star_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
@@ -297,8 +298,15 @@ pairs(Z_star_hat, cex = 0.5, col = alpha("red", alpha = 0.2),
   main = "Estimated uncorrelated factors")
 ```
 
-Estimate factor correlation ($r = `r r`$)
+6. Estimate factor correlation ($r = `r r`$)
 
 ```{r}
 cor(as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B))
 ```
+
+
+### References
+
+::: {#refs}
+:::
+
