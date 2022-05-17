@@ -358,7 +358,7 @@ Here we demonstrate that $\hat{Z}\hat{B}$ correctly estimates correlated factors
 
 ```{r}
 #| message: false
-set.seed(42)
+set.seed(3)
 
 n = 10000
 r = 0.7
