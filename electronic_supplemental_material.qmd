@@ -49,47 +49,13 @@ Here we analyze data from the PhoneStudy [@stachl2020predicting].
 
 ## Item Response Data
 
-### No standardization
+Complete cases analysis
 
 ```{r}
 #| message: false
 phonedata_items = read.csv2("datasets/Items.csv")
 phonedata_items = na.omit(phonedata_items[, 3:302])
 ```
-
-```{r}
-items_mat = as.matrix(phonedata_items)
-colnames(items_mat) = colnames(phonedata_items)
-items_mat = as(items_mat, "dgCMatrix")
-screeplot(vsp(items_mat, rank = 50,
-  degree_normalize = TRUE, center = FALSE))
-```
-
-```{r}
-pca_items = vsp(items_mat, rank = 5,
-  degree_normalize = TRUE, center = FALSE)
-pairs(as.matrix(pca_items$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (no standardization)")
-```
-
-```{r}
-pairs(as.matrix(pca_items$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.3), 
-  main = "Estimated loadings (no standardization)")
-```
-
-```{r}
-n = 10
-top_vars_items = data.frame(
-  Conscientiousness = names(sort(abs(pca_items$Y[, 1]), decreasing = TRUE)[1:n]),
-  Extraversion = names(sort(abs(pca_items$Y[, 2]), decreasing = TRUE)[1:n]),
-  Agreeableness = names(sort(abs(pca_items$Y[, 3]), decreasing = TRUE)[1:n]),
-  EmotionalStability = names(sort(abs(pca_items$Y[, 4]), decreasing = TRUE)[1:n]),
-  Openness = names(sort(abs(pca_items$Y[, 5]), decreasing = TRUE)[1:n])
-)
-top_vars_items
-```
-
-### With standardization
 
 ```{r}
 items_mat_z = as.matrix(scale(phonedata_items))
@@ -125,107 +91,6 @@ top_vars_items_z
 
 ## Mobile Sensing Data
 
-### Complete observations
-
-#### No standardization
-
-```{r}
-phonedata_sensing = readRDS(file = "datasets/clusterdata.RDS")
-phonedata_sensing = phonedata_sensing[, c(1:1821)]
-phonedata_sensing = phonedata_sensing[, 
-  sapply(phonedata_sensing, function(x) !anyNA(x))]
-```
-
-```{r}
-sensing_mat = as.matrix(phonedata_sensing)
-colnames(sensing_mat) = colnames(phonedata_sensing)
-sensing_mat = as(sensing_mat, "dgCMatrix")
-screeplot(vsp(sensing_mat, rank = 50,
-  degree_normalize = TRUE, center = TRUE))
-```
-
-```{r}
-pca_sensing = vsp(sensing_mat, rank = 5,
-  degree_normalize = TRUE, center = TRUE)
-pairs(as.matrix(pca_sensing$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (no standardization)")
-```
-
-```{r}
-pairs(as.matrix(pca_sensing$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.4), 
-  main = "Estimated loadings (no standardization)")
-```
-
-```{r}
-n = 20
-top_vars = data.frame(
-  GPS1 = names(sort(abs(pca_sensing$Y[, 1]), decreasing = TRUE)[1:n]),
-  GPS2 = names(sort(abs(pca_sensing$Y[, 2]), decreasing = TRUE)[1:n]),
-  GPS3 = names(sort(abs(pca_sensing$Y[, 3]), decreasing = TRUE)[1:n]),
-  GPS4 = names(sort(abs(pca_sensing$Y[, 4]), decreasing = TRUE)[1:n]),
-  GPS5 = names(sort(abs(pca_sensing$Y[, 5]), decreasing = TRUE)[1:n])
-)
-red_vars = unique(unlist(top_vars))
-top_vars
-```
-
-The resulting factors are hard to interpret because they do not have a simple structure.
-The top `r n` items loading on all components include only `r length(red_vars)` unique variables. 
-
-```{r}
-sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, red_vars]))
-colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, red_vars])
-sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
-screeplot(vsp(sensing_mat_z_red, rank = 20,
-  degree_normalize = FALSE, center = TRUE))
-```
-
-```{r}
-pca_sensing_z_red = vsp(sensing_mat_z_red, rank = 2, 
-  degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (reduced itemset with standardization)")
-```
-
-```{r}
-pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.6), 
-  main = "Estimated loadings (reduced itemset with standardization)")
-```
-
-```{r}
-sensing_mat_z = as.matrix(scale(phonedata_sensing))
-colnames(sensing_mat_z) = colnames(phonedata_sensing)
-sensing_mat_z = as(sensing_mat_z, "dgCMatrix")
-screeplot(vsp(sensing_mat_z, rank = 50, 
-  degree_normalize = FALSE, center = TRUE))
-```
-
-```{r}
-pca_sensing_z = vsp(sensing_mat_z, rank = 5, 
-  degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_z$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (with standardization)")
-```
-
-```{r}
-pairs(as.matrix(pca_sensing_z$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.4), 
-  main = "Estimated loadings (with standardization)")
-```
-
-```{r}
-n = 10
-top_vars_z = data.frame(
-  Apps_Unique = names(sort(abs(pca_sensing_z$Y[, 1]), decreasing = TRUE)[1:n]),
-  Calls = names(sort(abs(pca_sensing_z$Y[, 2]), decreasing = TRUE)[1:n]),
-  Music = names(sort(abs(pca_sensing_z$Y[, 3]), decreasing = TRUE)[1:n]),
-  Terrain = names(sort(abs(pca_sensing_z$Y[, 4]), decreasing = TRUE)[1:n]),
-  Apps_Photos = names(sort(abs(pca_sensing_z$Y[, 5]), decreasing = TRUE)[1:n])
-)
-top_vars_z
-```
-
-### Imputed data
-
 Mean imputation
 
 ```{r}
@@ -257,8 +122,41 @@ mice_obj_sensing = readRDS(file = "mice_obj_sensing.RDS")
 phonedata_sensing_imp = completeData(mice_obj_sensing)[[1]]
 ```
 
+### With standardization
 
-#### No standardization
+```{r}
+sensing_mat_imp_z = as.matrix(scale(phonedata_sensing_imp))
+colnames(sensing_mat_imp_z) = colnames(phonedata_sensing_imp)
+sensing_mat_imp_z = as(sensing_mat_imp_z, "dgCMatrix")
+screeplot(vsp(sensing_mat_imp_z, rank = 50, 
+  degree_normalize = FALSE, center = TRUE))
+```
+
+```{r}
+pca_sensing_imp_z = vsp(sensing_mat_imp_z, rank = 5, 
+  degree_normalize = FALSE, center = TRUE)
+pairs(as.matrix(pca_sensing_imp_z$Z[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
+  main = "Estimated factors (with standardization)")
+```
+
+```{r}
+pairs(as.matrix(pca_sensing_imp_z$Y[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
+  main = "Estimated loadings (with standardization)")
+```
+
+```{r}
+n = 10
+top_vars_z = data.frame(
+  Apps_Unique = names(sort(abs(pca_sensing_imp_z$Y[, 1]), decreasing = TRUE)[1:n]),
+  Calls = names(sort(abs(pca_sensing_imp_z$Y[, 2]), decreasing = TRUE)[1:n]),
+  Music = names(sort(abs(pca_sensing_imp_z$Y[, 3]), decreasing = TRUE)[1:n]),
+  Terrain = names(sort(abs(pca_sensing_imp_z$Y[, 4]), decreasing = TRUE)[1:n]),
+  Apps_Photos = names(sort(abs(pca_sensing_imp_z$Y[, 5]), decreasing = TRUE)[1:n])
+)
+top_vars_z
+```
+
+### Without standardization
 
 ```{r}
 sensing_mat_imp = as.matrix(phonedata_sensing_imp)
@@ -297,60 +195,23 @@ The resulting factors are hard to interpret because they do not have a simple st
 The top `r n` items loading on all components include only `r length(red_vars)` unique variables. 
 
 ```{r}
-#| eval: false
-sensing_mat_z_red = as.matrix(scale(phonedata_sensing[, ..red_vars]))
-colnames(sensing_mat_z_red) = colnames(phonedata_sensing[, ..red_vars])
-sensing_mat_z_red = as(sensing_mat_z_red, "dgCMatrix")
-screeplot(vsp(sensing_mat_z_red, rank = 20,
+sensing_mat_imp_z_red = as.matrix(scale(phonedata_sensing_imp[, red_vars]))
+colnames(sensing_mat_imp_z_red) = colnames(phonedata_sensing_imp[, red_vars])
+sensing_mat_imp_z_red = as(sensing_mat_imp_z_red, "dgCMatrix")
+screeplot(vsp(sensing_mat_imp_z_red, rank = 20,
   degree_normalize = FALSE, center = TRUE))
 ```
 
 ```{r}
-#| eval: false
-pca_sensing_z_red = vsp(sensing_mat_z_red, rank = 2, 
+pca_sensing_imp_z_red = vsp(sensing_mat_imp_z_red, rank = 2, 
   degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
+pairs(as.matrix(pca_sensing_imp_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated factors (reduced itemset with standardization)")
 ```
 
 ```{r}
-#| eval: false
-pairs(as.matrix(pca_sensing_z_red$Y[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.6), 
+pairs(as.matrix(pca_sensing_imp_z_red$Y[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.6), 
   main = "Estimated loadings (reduced itemset with standardization)")
-```
-
-#### With standardization
-
-```{r}
-sensing_mat_imp_z = as.matrix(scale(phonedata_sensing_imp))
-colnames(sensing_mat_imp_z) = colnames(phonedata_sensing_imp)
-sensing_mat_imp_z = as(sensing_mat_imp_z, "dgCMatrix")
-screeplot(vsp(sensing_mat_imp_z, rank = 50, 
-  degree_normalize = FALSE, center = TRUE))
-```
-
-```{r}
-pca_sensing_imp_z = vsp(sensing_mat_imp_z, rank = 5, 
-  degree_normalize = FALSE, center = TRUE)
-pairs(as.matrix(pca_sensing_imp_z$Z[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
-  main = "Estimated factors (with standardization)")
-```
-
-```{r}
-pairs(as.matrix(pca_sensing_imp_z$Y[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
-  main = "Estimated loadings (with standardization)")
-```
-
-```{r}
-n = 10
-top_vars_z = data.frame(
-  Apps_Unique = names(sort(abs(pca_sensing_imp_z$Y[, 1]), decreasing = TRUE)[1:n]),
-  Calls = names(sort(abs(pca_sensing_imp_z$Y[, 2]), decreasing = TRUE)[1:n]),
-  Music = names(sort(abs(pca_sensing_imp_z$Y[, 3]), decreasing = TRUE)[1:n]),
-  Terrain = names(sort(abs(pca_sensing_imp_z$Y[, 4]), decreasing = TRUE)[1:n]),
-  Apps_Photos = names(sort(abs(pca_sensing_imp_z$Y[, 5]), decreasing = TRUE)[1:n])
-)
-top_vars_z
 ```
 
 ## Summary Data Example
@@ -468,7 +329,7 @@ cor(as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B))
 
 While R&Z’s results are highly relevant for widespread applications of PCA+VMR, details might differ in psychology which could profit from better understanding of the $B$ matrix, and how to estimate oblique factors and loadings.
 
-### References
+# References
 
 ::: {#refs}
 :::
