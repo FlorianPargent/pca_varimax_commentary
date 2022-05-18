@@ -32,45 +32,36 @@ While R&Z’s results are highly relevant for widespread applications of PCA+VMR
 
 ## New Version
 
-As psychologists, we appreciate Rohe & Zeng's (R&Z; @rohe2022vintage) new insights into “vintage” principal component analysis with varimax rotation (PCA+VMR\; @kaiser1958varimax).
+As psychologists, we appreciate Rohe & Zeng's (R&Z; @rohe2022vintage) new insights into “vintage” principal component analysis with varimax rotation (PCA+VMR).
 Theories of intelligence and personality, perhaps psychology's contributions best known outside of our field, have been a direct product of PCA.
 PCA+VRM is still widely used for developing and evaluating psychological tests and questionnaires, although the literature has fought against it in favor of more complex factor analytic techniques [@fokkema2017how].
 
-<!-- In our opinion, generally abandoning the simpler PCA+VRM is a mistake and R&Z provide important arguments, here. -->
-<!-- However, their technical paper is complicated, which is why we try to relate their results to psychological applications. -->
-<!-- R&Z proof what many psychologists suspect but is dismissed by the literature: -->
-<!-- PCA+VRM *can* perform statistical inference in latent variable models. -->
-<!-- The factor indeterminacy problem which plagued VMR since its invention only applies for the special case of normally distributed factors. -->
-<!-- For any other distribution, perfect factor indeterminacy does not apply, although identifiability might be weak. -->
-<!-- Importantly, distributions producing sparse components fulfill a *sufficient* leptokurtic condition, which can be confirmed by simple diagnostics [@thurstone1947multiple]. -->
-
-In our opinion, abandoning the simpler PCA+VRM is a mistake and R&Z refute the most common argument against it: they proof that PCA+VRM *can* perform statistical inference in latent variable models.
+In our opinion, abandoning the simpler PCA(+VRM) is a mistake and R&Z refute a common argument by proving that PCA+VRM *can* perform statistical inference in latent variable models:
 The factor indeterminacy problem which plagued VMR since its invention only applies for the special case of normally distributed factors.
 For any other distribution, perfect factor indeterminacy does not apply, although identifiability might be weak.
-Importantly, distributions producing sparse components fulfill a *sufficient* leptokurtic condition, which can be confirmed by simple diagnostics [@thurstone1947multiple].
-Because the results are complicated, we relate them to psychological applications.
+However, distributions producing sparse components fulfill a *sufficient* leptokurtic condition, which can be confirmed by simple diagnostics.
 
-The examples in R&Z only deal with sparse binary network data.
-In typical psychological applications, the $A$ matrix consists of responses of $n$ persons to $d$ items which are either binary (intelligence tests), integer-valued (personality questionnaires) or continuous (digital sensors).
+Because the results are complicated, we relate them to psychological applications.
+The examples in R&Z only deal with sparse binary network data, but in typical psychological applications, the $A$ matrix consists of responses of $n$ persons to $d$ items which are either binary (intelligence tests), integer-valued (personality questionnaires) or continuous (digital sensors).
 Psychologists are often interested in whether i) items can be structured in a simple way to represent a small number of meaningful components, and ii) those components can be interpreted as psychological constructs that describe interindividual differences.
 R&Z show that "radial streaks" in the rotated loading matrix $\hat{Y}$ suggest that item loadings are identified and can be estimated with PCA+VRM from the data.
 Similarly, streaks in the component matrix $\hat{Z}$ suggest that person scores can be estimated.
 
-<!-- We want to caution psychologists to look at their data carefully because streaks might not be common with respect to both aspects.  -->
-<!-- However, we want to caution psychologists against assuming that both conditions are met without carefully at their data.  -->
-However, we question whether streaks are common in psychology with regard to both aspects:
-Test and questionnaire items are traditionally designed to measure only a single component, so "simple structure" reflected by streaks in $\hat{Y}$ might be expected.
-Psychological constructs are often conceptualized as roughly normally distributed, so streaks in $\hat{Z}$ seem more questionable.
-In our online materials (<https://osf.io/5symf/>), we analyze a dataset [@stachl2020predicting] containing both personality items ($n =`r nrow(phonedata_items)`$, $d =`r ncol(phonedata_items)`$) and smartphone sensing variables ($n =`r nrow(phonedata_sensing)`$, $d =`r ncol(phonedata_sensing)`$), where we found streaks only in $\hat{Y}$ but not in $\hat{Z}$.
-We also present a cautionary example, how imputation of missing values in combination with inappropriate data processing seems to produce streaks in $\hat{Z}$ that belong to uninterpretable components.
+However, we question whether streaks are common in psychology with regard to both aspects.
+<!-- Test and questionnaire items are traditionally designed to measure only a single component, so "simple structure" reflected by streaks in $\hat{Y}$ might be expected. -->
+<!-- Psychological constructs are often conceptualized as roughly normally distributed, so streaks in $\hat{Z}$ seem more questionable. -->
+In our online materials (<https://osf.io/5symf/>), we analyze a dataset [@stachl2020predicting] containing both personality items ($n =`r nrow(phonedata_items)`$, $d =`r ncol(phonedata_items)`$) and smartphone sensing variables ($n =`r nrow(phonedata_sensing)`$, $d =`r ncol(phonedata_sensing)`$).
+Streaks were found only in $\hat{Y}$ but not in $\hat{Z}$.
+It is also a cautionary example how imputation of missing values in combination with inappropriate data processing seems to produce streaks in $\hat{Z}$ that belong to uninterpretable components.
 <!-- Degree normalization as discussed in R&Q is not suitable for many psychological datasets and other procedures like z-standardization are often required to detect meaningful factors. -->
 Finally, we demonstrate R&Z's surprising side result that the matrix $\hat{Z}\hat{B}$ from PCA+VRM can correctly estimate person scores simulated from oblique leptokurtic components.
+<!-- Finally, we demonstrate R&Z's surprising side result that PCA+VRM can sometimes correctly estimate correlated person scores. -->
 
-<!-- Although R&Z proof that PCA+VRM can estimate well defined latent variable models, we do not think that the method necessarily has its main use in this way. -->
-
-Although R&Z proof that latent variable models could be estimated by PCA+VRM, the method not necessarily has its main use in this way.
+<!-- Although R&Z proof that latent variable models sometimes could be estimated by PCA+VRM, the method not necessarily has its main use in this way. -->
+In our opinion, the main usefulness of PCA+VRM not necessarily stems from its ability to estimate latent variable models.
 PCA excels at providing meaningful descriptions in practical applications but R&Z's and our examples also show that there is rarely a single definite structure.
-In our opinion, components main usefulness stems from their ability to predict or explain other meaningful quantities, which does not require any latent variables in a strict sense.
+<!-- We think that components' main usefulness stems from their ability to predict or explain other meaningful quantities, which does not require any latent variables in a strict sense. -->
+Components are most usefulness when they predict other meaningful quantities, which does not require latent variables in any strict sense.
 
 ### References
 
