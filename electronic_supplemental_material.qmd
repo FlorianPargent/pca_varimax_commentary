@@ -1,6 +1,13 @@
 ---
-title: "Electronic Supplemental Material: PCA + Varimax Commentary"
-author: "Florian Pargent & David Goretzko"
+title: "Electronic Supplemental Material: New Insights into PCA + Varimax for Psychological Researchers"
+date: 2022-05-18
+author:
+  - name: Florian Pargent
+    affiliation: LMU Munich, Germany
+  - name: David Goretzko
+    affiliation: Leipzig University, Germany
+  - name: Timo von Oertzen
+    affiliation: Bundeswehr University Munich, Germany
 format: 
   html:
     toc: true

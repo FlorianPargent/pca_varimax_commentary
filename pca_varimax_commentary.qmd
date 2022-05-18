@@ -1,7 +1,14 @@
 ---
 title: "New Insights into PCA + Varimax for Psychological Researchers"
-author: "Florian Pargent, Timo von Oertzen, & David Goretzko"
-format: pdf
+date: 2022-05-18
+author:
+  - name: Florian Pargent
+    affiliation: LMU Munich, Germany
+  - name: David Goretzko
+    affiliation: Leipzig University, Germany
+  - name: Timo von Oertzen
+    affiliation: Bundeswehr University Munich, Germany
+format: html
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 editor: visual
@@ -40,7 +47,7 @@ In our online materials (<https://osf.io/5symf/>), we analyze a dataset [@stachl
 Streaks were found only in $\hat{Y}$ but not in $\hat{Z}$.
 It is also a cautionary example how imputation of missing values in combination with inappropriate data processing seems to produce streaks in $\hat{Z}$ that belong to uninterpretable components.
 <!-- Degree normalization as discussed in R&Q is not suitable for many psychological datasets and other procedures like z-standardization are often required to detect meaningful factors. -->
-Finally, we demonstrate R&Z's surprising side result that the matrix $\hat{Z}\hat{B}$ from PCA+VR can correctly estimate person scores simulated from oblique leptokurtic components.
+Finally, we demonstrate R&Z's side result that the matrix $\hat{Z}\hat{B}$ from PCA+VR can correctly estimate person scores simulated from oblique leptokurtic components.
 <!-- Finally, we demonstrate R&Z's surprising side result that PCA+VR can sometimes correctly estimate correlated person scores. -->
 
 <!-- Although R&Z proof that latent variable models sometimes could be estimated by PCA+VR, the method not necessarily has its main use in this way. -->
