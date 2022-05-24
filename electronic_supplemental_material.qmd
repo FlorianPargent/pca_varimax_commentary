@@ -433,7 +433,7 @@ We can verify that the correlation of the scores in $\hat{Z}\hat{B}$ are close t
 Our simulation seems to demonstrate the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VR estimates the Cholesky factor of the covariance matrix $Z^TZ$ (up to a change of unit).
 Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlation matrix in our demonstration.
 
-Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot \sqrt{\sqrt{\sqrt{d}}}$. However, we could not determine why.
+Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot d^{1/8}$. However, we could not determine why.
 
 
 ::: {#refs}
