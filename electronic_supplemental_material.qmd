@@ -1,6 +1,5 @@
 ---
 title: "Electronic Supplemental Material: New Insights into PCA + Varimax for Psychological Researchers"
-date: 2022-05-18
 author:
   - name: Florian Pargent
     affiliation: LMU Munich, Germany
@@ -11,6 +10,8 @@ author:
 format: 
   html:
     toc: true
+    self-contained: true
+    self-contained-math: true
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 editor: visual
@@ -328,10 +329,6 @@ top_vars = data.frame(
 kable(top_vars)
 ```
 
-## Summary Data Example
-
-TODO: Do we want this? Or not needed?
-
 # Correlated Factors Simulation
 
 Another important aspect of psychological applications of PCA+VR are correlated factors (e.g., the personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
@@ -436,9 +433,6 @@ We can verify that the correlation of the scores in $\hat{Z}\hat{B}$ are close t
 Our simulation demonstrates the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VR estimates the Cholesky factor of the covariance matrix $Z^TZ$.
 Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlation matrix in our demonstration.
 
-# Summary Commentary
-
-TODO: Do we want this? Or not needed?
 
 ::: {#refs}
 :::

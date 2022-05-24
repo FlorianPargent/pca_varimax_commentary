@@ -1,6 +1,5 @@
 ---
 title: "New Insights into PCA + Varimax for Psychological Researchers"
-date: 2022-05-24
 author:
   - name: Florian Pargent, LMU Munich
   - name: David Goretzko, Leipzig University
