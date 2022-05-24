@@ -28,6 +28,8 @@ library(mvtnorm)
 
 # Short Summary of Rohe & Zheng (2022)
 
+TODO: Do we want this? Or not needed?
+
 # Data Example: PhoneStudy
 
 In contrast to the examples in R&Z which only deal with sparse binary network data, psychological applications (traditionally) deal with i) questionnaire items or (increasingly) ii) digital data, e.g., mobile sensing.
@@ -214,8 +216,8 @@ n = 10
 top_vars_z = data.frame(
   Apps_Usage = names(sort(abs(pca_sensing_imp_z$Y[, 1]), decreasing = TRUE)[1:n]),
   Calls = names(sort(abs(pca_sensing_imp_z$Y[, 2]), decreasing = TRUE)[1:n]),
-  Music_Frequency = names(sort(abs(pca_sensing_imp_z$Y[, 3]), decreasing = TRUE)[1:n]),
-  Music_Energy = names(sort(abs(pca_sensing_imp_z$Y[, 4]), decreasing = TRUE)[1:n]),
+  Music_Songs = names(sort(abs(pca_sensing_imp_z$Y[, 3]), decreasing = TRUE)[1:n]),
+  Music_Audio_Features = names(sort(abs(pca_sensing_imp_z$Y[, 4]), decreasing = TRUE)[1:n]),
   Terrain = names(sort(abs(pca_sensing_imp_z$Y[, 5]), decreasing = TRUE)[1:n])
 )
 kable(top_vars_z)
@@ -328,16 +330,16 @@ kable(top_vars)
 
 ## Summary Data Example
 
+TODO: Do we want this? Or not needed?
+
 # Correlated Factors Simulation
 
-Another important aspect of psychological applications are correlated factors (e.g. personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
-Interestingly, R&Z show as a side result that in their semi-parametric factor model, their version of PCA+VM can be used to also estimate correlated factors und situations relevant for psychological measurement models.
+Another important aspect of psychological applications of PCA+VM are correlated factors (e.g. the personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
+Interestingly, R&Z show as a side result that the results of PCA+VM can be used to also estimate correlated factors in situations which are relevant for psychological measurement models.
 
-Here we demonstrate that $\hat{Z}\hat{B}$ correctly estimates correlated factors simulated from a leptokurtic distribution.
+Here we demonstrate that $\hat{Z}\hat{B}$ correctly estimates correlated factors simulated from a leptokurtic distribution:
 
 1. Simulate correlated factor scores from a multivariate leptokurtic distribution.
-
-Correlated factor scores are simulated by multiplying the uncorrelated scores with the Cholesky factor of a correlation matrix with the desired correlation.
 
 ```{r}
 #| message: false
@@ -350,15 +352,18 @@ Z_star = scale(matrix(sample(c(-1,1), 2 * n, T) *
     rexp(n * 2, rate = 2) ^ 1.3, ncol = 2))
 cor_mat = matrix(c(1, rho, rho, 1), ncol = 2)
 Z = Z_star %*% chol(cor_mat)
+```
 
+We first simulate two-dimensional uncorrelated standardized scores from a leptokurtic distribution ($Z^*$).
+Correlated scores ($Z$) are then constructed by multiplying the uncorrelated scores with the Cholesky factor of a correlation matrix with the desired correlation ($\rho = $`r rho`).
+
+```{r}
 pairs(Z, cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "True correlated factors")
 ```
-When plotting the simulated component scores in the $Z$ matrix, we see that the two dimensions are now correlated (i.e. oblique components).
+When plotting the simulated component scores in the $Z$ matrix, we see non orthogonal streaks (i.e. oblique components).
 
 2. Simulate item response data.
-
-We create a loading matrix $Y$ with simple structure and simulate the data matrix $A$ by $ZY^T$ plus some noise.
 
 ```{r}
 k = 2
@@ -385,6 +390,8 @@ Y = loadings(k, d, vpf, pf_low, pf_upper, sf_low, sf_upper)
 A =  Z %*% t(Y) + rnorm(n * d, sd = 0.1)
 ```
 
+We create a loading matrix $Y$ with simple structure and simulate the data matrix $A$ with $ZY^T$ and add some normally distributed noise.
+
 3. Perform PCA + Varimax
 
 ```{r}
@@ -398,23 +405,32 @@ pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2),
   main = "Estimated uncorrelated factors")
 ```
 
-5. Estimate correlated factor scores $Z^*$
+When plotting the $\hat{Z}$ matrix returned from PCA+VM, we see orthogonal streaks similar to $Z^*$.
+
+5. Estimate correlated component scores $Z$
 
 ```{r}
-Z_star_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
-pairs(Z_star_hat, cex = 0.5, col = alpha("red", alpha = 0.2), 
+ZB_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
+pairs(ZB_hat, cex = 0.5, col = alpha("red", alpha = 0.2), 
   main = "Estimated uncorrelated factors")
 ```
 
-6. Estimate factor correlation ($\rho = `r rho`$)
+However, the matrix $\hat{Z}\hat{B}$ contains the correlated components from $Z$.
+
+6. Estimate correlation between components
 
 ```{r}
-cor(as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B))
+cor(ZB_hat)
 ```
 
+We can verify that the correlation of the scores in $\hat{Z}\hat{B}$ are close to the true correlation in $Z$ ($\rho = `r rho`$).
+
+Our simulation demonstrates the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VM estimates the Cholesky factor of the covariance matrix $Z^TZ$.
+Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlation matrix in our demonstration.
 
 # Summary Commentary
 
+TODO: Do we want this? Or not needed?
 
 ::: {#refs}
 :::
