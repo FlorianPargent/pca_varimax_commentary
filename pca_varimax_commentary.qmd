@@ -29,7 +29,7 @@ As psychologists, we appreciate Rohe & Zeng's (R&Z; @rohe2022vintage) new insigh
 Theories of intelligence and personality, perhaps psychology's contributions best known outside of our field, have been a direct product of PCA.
 PCA+VR is still widely used for developing and evaluating psychological tests and questionnaires, although the literature has fought against it in favor of more complex factor analytic techniques [@fokkema2017how].
 
-In our opinion, abandoning the simpler PCA(+VR) is a mistake and R&Z refute a common argument by proving that PCA+VM *can* perform statistical inference in latent variable models:
+In our opinion, abandoning the simpler PCA(+VR) is a mistake and R&Z refute a common argument by proving that PCA+VR *can* perform statistical inference in latent variable models:
 The factor indeterminacy problem which plagued VR since its invention only applies for the special case of normally distributed factors.
 For any other distribution, perfect factor indeterminacy does not apply, although identifiability might be weak.
 However, distributions producing sparse components fulfill a *sufficient* leptokurtic condition, which can be confirmed by simple diagnostics.
@@ -54,7 +54,7 @@ Finally, we demonstrate R&Z's side result that the matrix $\hat{Z}\hat{B}$ from 
 In our opinion, the main usefulness of PCA+VR not necessarily stems from its ability to estimate latent variable models.
 PCA excels at providing meaningful descriptions in practical applications but R&Z's and our examples also show that there is rarely a single definite structure.
 <!-- We think that components' main usefulness stems from their ability to predict or explain other meaningful quantities, which does not require any latent variables in a strict sense. -->
-Components are most usefulness when they predict other meaningful quantities, which does not require latent variables in any strict sense.
+Components are most useful when they predict other meaningful quantities, which does not require latent variables in any strict sense.
 
 ### References
 
