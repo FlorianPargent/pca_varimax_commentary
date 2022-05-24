@@ -1,14 +1,11 @@
 ---
 title: "New Insights into PCA + Varimax for Psychological Researchers"
-date: 2022-05-18
+date: 2022-05-24
 author:
-  - name: Florian Pargent
-    affiliation: LMU Munich, Germany
-  - name: David Goretzko
-    affiliation: Leipzig University, Germany
-  - name: Timo von Oertzen
-    affiliation: Bundeswehr University Munich, Germany
-format: html
+  - name: Florian Pargent, LMU Munich
+  - name: David Goretzko, Leipzig University
+  - name: Timo von Oertzen, Bundeswehr University Munich
+format: pdf
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 editor: visual
