@@ -342,7 +342,7 @@ library(scales)
 library(mvtnorm)
 ```
 
-Here we demonstrate that $\hat{Z}\hat{B}$ correctly estimates correlated factors simulated from a leptokurtic distribution:
+Here we demonstrate that $\hat{Z}\hat{B}$ (up to a change of units) estimates correlated factors simulated from a leptokurtic distribution:
 
 1. Simulate correlated factor scores from a multivariate leptokurtic distribution.
 
@@ -403,7 +403,7 @@ We create a loading matrix $Y$ with simple structure and simulate the data matri
 pca_sim = vsp(A, rank = 2, degree_normalize = FALSE)
 ```
 
-4. Estimate uncorrelated factor scores $Z$
+4. Estimate uncorrelated component scores $Z$
 
 ```{r}
 pairs(as.matrix(pca_sim$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
@@ -417,10 +417,10 @@ When plotting the $\hat{Z}$ matrix returned from PCA+VR, we see orthogonal strea
 ```{r}
 ZB_hat = as.matrix(pca_sim$Z) %*% as.matrix(pca_sim$B)
 pairs(ZB_hat, cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated uncorrelated factors")
+  main = "Estimated correlated factors")
 ```
 
-However, the matrix $\hat{Z}\hat{B}$ contains the correlated components from $Z$.
+However, the matrix $\hat{Z}\hat{B}$ contains correlated components similar to $Z$.
 
 6. Estimate correlation between components
 
@@ -430,8 +430,10 @@ cor(ZB_hat)
 
 We can verify that the correlation of the scores in $\hat{Z}\hat{B}$ are close to the true correlation in $Z$ ($\rho = `r rho`$).
 
-Our simulation demonstrates the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VR estimates the Cholesky factor of the covariance matrix $Z^TZ$.
+Our simulation seems to demonstrate the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VR estimates the Cholesky factor of the covariance matrix $Z^TZ$ (up to a change of unit).
 Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlation matrix in our demonstration.
+
+Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot \sqrt{\sqrt{\sqrt{d}}}$. However, we could not determine why.
 
 
 ::: {#refs}
