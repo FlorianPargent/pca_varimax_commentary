@@ -1,5 +1,6 @@
 ---
 title: "Electronic Supplemental Material: New Insights into PCA + Varimax for Psychological Researchers"
+subtitle: "A short commentary on Rohe & Zeng (2022)"
 author:
   - name: Florian Pargent
     affiliation: LMU Munich, Germany
@@ -7,24 +8,31 @@ author:
     affiliation: Leipzig University, Germany
   - name: Timo von Oertzen
     affiliation: Bundeswehr University Munich, Germany
+date: 2022-06-08
 format: 
   html:
     toc: true
     self-contained: true
     self-contained-math: true
+citation:
+  url: https://osf.io/5symf/
+  type: article
 bibliography: references.bib
 csl: elsevier-vancouver.csl
 editor: visual
 ---
 
-# Comment on Rohe & Zeng (2022)
+# A Short Commentary on Rohe & Zeng (2022)
 
-In their paper “Vintage factor analysis with varimax performs statistical inference”, Rohe and Zeng [R&Z\;@rohe2022vintage] demonstrate the usefulness of principal component analysis with varimax rotation (PCA+VR) – a combination they call *vintage factor analysis*.
-The authors show that this vintage factor analysis can be used to identify latent factors (if a leptokurtic condition is fulfilled) and is able to estimate factor scores correctly even if the latent factors are correlated.
-In our comment *"New Insights into PCA + Varimax for Psychological Researchers"*, we briefly discuss some implications of these results for psychological research and show that the suggested diagnostics of “radial streaks” might be difficult for typical psychological data.
-In the the current supplementary document, we present i) an exemplary data analysis that is discussed in our comment, and ii) a small simulation demonstrating the ability of PCA+VR to estimate correlated factors.
+In their paper *“Vintage factor analysis with varimax performs statistical inference”*, Rohe and Zeng [R&Z\;@rohe2022vintage] demonstrate the usefulness of principal component analysis with varimax rotation (PCA+VR), a combination they call *vintage factor analysis*.
+The authors show that this vintage factor analysis can be used to estimate factor scores and factor loadings, if a certain leptokurtic condition is fulfilled that can be assessed by simple visual diagnostics.
+In a side result, they also imply that PCA+VR is able to estimate factor scores even if the latent factors are correlated.
+In our commentary *"New Insights into PCA + Varimax for Psychological Researchers"*, we briefly discuss some implications of these results for psychological research and note that the suggested diagnostics of “radial streaks” might give less clear results in typical psychological applications.
+The commentary includes extensive electronic supplemental materials, with a data example and a small simulation on estimating correlated factors, that can be found at <https://osf.io/5symf/>.
 
-# Data Example: PhoneStudy
+In the current electronic supplementary materials, we present i) an exemplary data analysis that is discussed in our comment, and ii) a small simulation demonstrating the ability of PCA+VR to estimate correlated factors.
+
+# Data Example: The PhoneStudy
 
 ```{r}
 #| message: false
@@ -47,7 +55,7 @@ Item responses to the personality questionnaire are contained in the file *Items
 Both can be downloaded from <https://osf.io/fxv3k/download>.
 We include copies of the aggregated datasets in our project repository for convenience.
 More details on the *PhoneStudy* data can be found in @stachl2020predicting.
-Mobile sensing variables are described in detail at <https://compstat-lmu.shinyapps.io/Personality_Prediction/#section-datadict>.
+Mobile sensing variables are described in more detail at <https://compstat-lmu.shinyapps.io/Personality_Prediction/#section-datadict>.
 
 ## Item Response Data
 
@@ -164,7 +172,7 @@ mice_obj_sensing = readRDS(file = "mice_obj_sensing.RDS")
 phonedata_sensing_imp = as.data.frame(completeData(mice_obj_sensing)[[1]])
 ```
 
-### Analysis with standardization
+### Analysis with Standardization
 
 In contrast to the item response data, there is a huge difference in the standard deviations of the smartphone sensing variables.
 
@@ -229,7 +237,7 @@ However, we did not find streaks in the estimated component matrix $\hat{Z}$ so 
 
 The following cautionary example showcases what can happen when the smartphone sensing data is not preprocessed with enough care.
 
-### A cautionary example: Analysis without standardization
+### A Cautionary example: Analysis without Standardization
 
 To simulate mindless data analysis, we do not standardize the smartphone sensing variables and set `degree_normalize = TRUE` in the `vsp` call, although this should not be a meaningful setting because we do not analyze binary network data here.
 
@@ -329,7 +337,7 @@ top_vars = data.frame(
 kable(top_vars)
 ```
 
-# Correlated Factors Simulation
+# Simulation: Correlated Factors
 
 Another important aspect of psychological applications of PCA+VR are correlated factors (e.g., the personality dimensions conscientiousness and neuroticism are thought to correlate around $-0.4$; @vanderlinden2010general), thus oblique rotations are often argued for.
 Interestingly, R&Z show as a side result that the results of PCA+VR can be used to also estimate correlated factors in situations which are relevant for psychological measurement models.
@@ -433,8 +441,25 @@ We can verify that the correlation of the scores in $\hat{Z}\hat{B}$ are close t
 Our simulation seems to demonstrate the results from sections **7.1** and **7.2** in R&Z, which state that if scores in $Z$ are correlated; scores in $Y$ are centered, independent, and leptokurtic; and the true $B$ is proportional to the identity matrix, then the $\hat{B}$ matrix returned from PCA+VR estimates the Cholesky factor of the covariance matrix $Z^TZ$ (up to a change of unit).
 Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlation matrix in our demonstration.
 
-Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot d^{1/8}$. However, we could not determine why.
+## Open Questions
 
+Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot d^{1/8}$. 
+
+```{r}
+nrows = 10
+compare_scores = data.frame(
+  z1 = Z[1:nrows, 1],
+  z1_hat = ZB_hat[1:nrows, 1] * d^(1/8),
+  z2 = Z[1:nrows, 2],
+  z2_hat = ZB_hat[1:nrows, 2] * d^(1/8),
+row.names = NULL)
+kable(compare_scores)
+```
+
+Unfortunately, we were not able not determine why or whether this might be just a coincidence here.
+To conclude, we agree with the following comment in R$Z [@rohe2022vintage] and are looking forward to further research in this direction:
+
+>Taken together, this all suggests that the B matrix provides a path to understanding “correlation among the factors.” Understanding this phenomenon is an active area of research in our lab.
 
 ::: {#refs}
 :::
