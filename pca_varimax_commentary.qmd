@@ -46,7 +46,7 @@ Finally, we demonstrate R&Z's side result that the matrix $\hat{Z}\hat{B}$ from 
 
 In our opinion, the main usefulness of PCA+VR not necessarily stems from its ability to estimate latent variable models.
 PCA excels at providing meaningful descriptions in practical applications but R&Z's and our examples also show that there is rarely a single definite structure.
-Components are most useful when they predict other meaningful quantities, which does not require latent variables in any strict sense.
+Components are most useful when they predict other meaningful quantities, regardless of the assumed epistemological nature of psychological constructs [@yarkoni2020implicit].
 
 ### References
 
