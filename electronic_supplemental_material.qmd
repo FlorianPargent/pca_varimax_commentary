@@ -458,7 +458,7 @@ kable(compare_scores)
 ```
 
 Unfortunately, we were not able not determine why or whether this might be just a coincidence here.
-To conclude, we agree with the following comment in R$Z [@rohe2022vintage] and are looking forward to further research in this direction:
+To conclude, we agree with the following comment in R&Z [@rohe2022vintage] and are looking forward to further research in this direction:
 
 >Taken together, this all suggests that the B matrix provides a path to understanding “correlation among the factors.” Understanding this phenomenon is an active area of research in our lab.
 
