@@ -369,7 +369,7 @@ Z = Z_star %*% chol(cor_mat)
 ```
 
 We first simulate two-dimensional uncorrelated standardized scores from a leptokurtic distribution ($Z^*$).
-Correlated scores ($Z$) are then constructed by multiplying the uncorrelated scores with the Cholesky factor of a correlation matrix with the desired correlation ($\rho = $`r rho`).
+Correlated scores ($Z$) are then constructed by multiplying the uncorrelated scores with the Cholesky factor of a correlation matrix with the desired correlation ($\rho = `r rho`$).
 
 ```{r}
 pairs(Z, cex = 0.5, col = alpha("red", alpha = 0.2), 
