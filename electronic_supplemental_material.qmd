@@ -28,8 +28,8 @@ editor: visual
 In their paper *“Vintage factor analysis with varimax performs statistical inference”*, Rohe and Zeng [R&Z\;@rohe2022vintage] demonstrate the usefulness of principal component analysis with varimax rotation (PCA+VR), a combination they call *vintage factor analysis*.
 The authors show that PCA+VR can be used to estimate factor scores and factor loadings, if a certain leptokurtic condition is fulfilled that can be assessed by simple visual diagnostics.
 In a side result, they also imply that PCA+VR is able to estimate factor scores even if the latent factors are correlated.
-In our commentary *"New Insights into PCA + Varimax for Psychological Researchers"*, we briefly discuss some implications of these results for psychological research and note that the suggested diagnostics of “radial streaks” might give less clear results in typical psychological applications.
-The commentary includes extensive electronic supplemental materials, including a data example and a small simulation on estimating correlated factors, that can be found at <https://osf.io/5symf/>.
+In our commentary *"New Insights into PCA + Varimax for Psychological Researchers"* [@pargent2022new], we briefly discuss some implications of these results for psychological research and note that the suggested diagnostics of “radial streaks” might give less clear results in typical psychological applications.
+The commentary includes extensive *electronic supplemental materials*, containing a data example and a small simulation on estimating correlated factors, that can be found at <https://osf.io/5symf/>.
 
 In the current electronic supplementary materials, we present i) an exemplary data analysis that is discussed in our comment, and ii) a small simulation demonstrating the ability of PCA+VR to estimate correlated factors.
 
