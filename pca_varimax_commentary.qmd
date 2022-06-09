@@ -36,12 +36,12 @@ R&Z show that "radial streaks" in the rotated loading matrix $\hat{Y}$ suggest t
 Similarly, streaks in the component matrix $\hat{Z}$ suggest that person scores can be estimated.
 
 However, we question whether streaks are common in psychology with regard to both aspects.
-Test and questionnaire items are traditionally designed to measure only a single construct, so "simple structure" reflected by streaks in $\hat{Y}$ might be expected.
-Psychological constructs are often conceptualized as roughly normally distributed, so streaks in $\hat{Z}$ seem more questionable.
+<!-- Test and questionnaire items are traditionally designed to measure only a single construct, so "simple structure" reflected by streaks in $\hat{Y}$ might be expected. -->
+<!-- Psychological constructs are often conceptualized as roughly normally distributed, so streaks in $\hat{Z}$ seem more questionable. -->
 In our online materials (<https://osf.io/5symf/>), we analyze a dataset [@stachl2020predicting] containing both personality items ($n =`r nrow(phonedata_items)`$, $d =`r ncol(phonedata_items)`$) and smartphone sensing variables ($n =`r nrow(phonedata_sensing)`$, $d =`r ncol(phonedata_sensing)`$).
 Streaks were found only in $\hat{Y}$ but not in $\hat{Z}$.
 It is also a cautionary example of how imputation of missing values in combination with inappropriate data processing seemingly produce streaks in $\hat{Z}$ that belong to uninterpretable components.
-Degree normalization as discussed in R&Z is not suitable for many psychological datasets and other procedures like z-standardization are often required to detect meaningful factors.
+<!-- Degree normalization as discussed in R&Z is not suitable for many psychological datasets and other procedures like z-standardization are often required to detect meaningful factors. -->
 Finally, we demonstrate R&Z's side result that the matrix $\hat{Z}\hat{B}$ from PCA+VR can estimate person scores simulated from oblique leptokurtic components.
 
 In our opinion, the main usefulness of PCA+VR not necessarily stems from its ability to estimate latent variable models.
