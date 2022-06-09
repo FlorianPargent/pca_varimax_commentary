@@ -7,7 +7,7 @@ author:
   - name: David Goretzko
     affiliation: Leipzig University
   - name: Timo von Oertzen
-    affiliation: Bundeswehr University Munich, Max Planck Institute for Human Development
+    affiliation: Bundeswehr University Munich and Max Planck Institute for Human Development
 date: 2022-06-09
 format: 
   html:
@@ -16,6 +16,7 @@ format:
     self-contained-math: true
 citation:
   url: https://osf.io/5symf/
+  doi: 10.17605/OSF.IO/5SYMF
   type: article
 bibliography: references.bib
 csl: elsevier-vancouver.csl
@@ -100,7 +101,7 @@ We search for **radial streaks** in the estimated component and loading matrices
 
 ```{r}
 pairs(as.matrix(pca_items_z$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (with standardization)")
+  main = "Estimated components (with standardization)")
 ```
 
 We do not find streaks in the estimated component matrix $\hat{Z}$.
@@ -110,7 +111,7 @@ pairs(as.matrix(pca_items_z$Y[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.3
   main = "Estimated loadings (with standardization)")
 ```
 
-However, we find streaks in the estimated loading matrix $\hat{Y}$.
+However, we find noisy streaks in the estimated loading matrix $\hat{Y}$.
 This **simple structure** is in line with the construction process of the personality questionnaire, which has the goal that each item measures only a single Big Five factor.
 Streaks are even more pronounced when extracting 30 components.
 
@@ -204,7 +205,7 @@ We search for **radial streaks** in the estimated component and loading matrices
 
 ```{r}
 pairs(as.matrix(pca_sensing_imp_z$Z[, 1:5]), cex = 0.3, col = alpha("red", alpha = 0.1), 
-  main = "Estimated factors (with standardization)")
+  main = "Estimated components (with standardization)")
 ```
 
 We do not find a clear indication of streaks in the estimated component matrix $\hat{Z}$.
@@ -233,13 +234,13 @@ kable(top_vars_z)
 ```
 
 To summarize, with careful preprocessing and appropriate data standardization, PCA+VR seems to meaningfully cluster the smartphone sensing variables, as indicated by radial streaks in the estimated loading matrix $\hat{Y}$.
-However, we did not find streaks in the estimated component matrix $\hat{Z}$ so we cannot have confidence that PCA+VR was able to estimate well identified person scores on these components.
+However, we did not find streaks in the estimated component matrix $\hat{Z}$ so we cannot necessarily have high confidence that PCA+VR was able to estimate well identified person scores on these components.
 
 The following cautionary example showcases what can happen when the smartphone sensing data is not preprocessed with enough care.
 
 ### A Cautionary example: Analysis without Standardization
 
-To simulate mindless data analysis, we do not standardize the smartphone sensing variables and set `degree_normalize = TRUE` in the `vsp` call, although this should not be a meaningful setting because we do not analyze binary network data here.
+To simulate mindless data analysis, we do not standardize the smartphone sensing variables and use the default `degree_normalize = TRUE` in the `vsp` call, although this should not be a meaningful setting because we do not analyze binary network data here.
 
 ```{r}
 sensing_mat_imp = as.matrix(phonedata_sensing_imp)
@@ -258,7 +259,7 @@ When searching for **radial streaks** in the estimated component and loading mat
 pca_sensing_imp = vsp(sensing_mat_imp, rank = 5,
   degree_normalize = TRUE, center = TRUE)
 pairs(as.matrix(pca_sensing_imp$Z[, 1:5]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (no standardization)")
+  main = "Estimated components (no standardization)")
 ```
 
 With these settings, we *do* find beautiful streaks in the estimated component matrix $\hat{Z}$.
@@ -320,7 +321,7 @@ screeplot(vsp(sensing_mat_imp_z_red, rank = 20,
 pca_sensing_imp_z_red = vsp(sensing_mat_imp_z_red, rank = 2, 
   degree_normalize = FALSE, center = TRUE)
 pairs(as.matrix(pca_sensing_imp_z_red$Z[, 1:2]), cex = 0.5, col = alpha("red", alpha = 0.2), 
-  main = "Estimated factors (reduced itemset with standardization)")
+  main = "Estimated components (reduced itemset with standardization)")
 ```
 
 ```{r}
@@ -443,7 +444,7 @@ Note that because our scores in $Z$ were scaled, $Z^TZ$ is equal to the correlat
 
 ## Open Questions
 
-Suprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot d^{1/8}$. 
+Surprisingly, the exact scores in $Z$ (in the same unit) seem to be estimated by $\hat{Z}\hat{B}\cdot d^{1/8}$. 
 
 ```{r}
 nrows = 10
@@ -460,6 +461,8 @@ Unfortunately, we were not able not determine why or whether this might be just 
 To conclude, we agree with the following comment in R$Z [@rohe2022vintage] and are looking forward to further research in this direction:
 
 >Taken together, this all suggests that the B matrix provides a path to understanding “correlation among the factors.” Understanding this phenomenon is an active area of research in our lab.
+
+# References
 
 ::: {#refs}
 :::

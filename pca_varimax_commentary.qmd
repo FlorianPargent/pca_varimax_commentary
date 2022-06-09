@@ -4,7 +4,7 @@ subtitle: "A short commentary on Rohe & Zeng (2022)"
 author:
   - name: Florian Pargent^[Department Psychology, LMU Munich. Correspondence concerning this article should be addressed to Florian Pargent, Leopoldstr. 13, 80802 München, Germany. E-mail$:$ <florian.pargent@psy.lmu.de>]
   - name: David Goretzko^[Leipzig University]
-  - name: Timo von Oertzen^[Bundeswehr University Munich, Max Planck Institute for Human Development]
+  - name: Timo von Oertzen^[Bundeswehr University Munich and Max Planck Institute for Human Development]
 format: pdf
 bibliography: references.bib
 csl: elsevier-vancouver.csl
