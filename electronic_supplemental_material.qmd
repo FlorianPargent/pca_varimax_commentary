@@ -25,10 +25,10 @@ editor: visual
 # A Short Commentary on Rohe & Zeng (2022)
 
 In their paper *“Vintage factor analysis with varimax performs statistical inference”*, Rohe and Zeng [R&Z\;@rohe2022vintage] demonstrate the usefulness of principal component analysis with varimax rotation (PCA+VR), a combination they call *vintage factor analysis*.
-The authors show that this vintage factor analysis can be used to estimate factor scores and factor loadings, if a certain leptokurtic condition is fulfilled that can be assessed by simple visual diagnostics.
+The authors show that PCA+VR can be used to estimate factor scores and factor loadings, if a certain leptokurtic condition is fulfilled that can be assessed by simple visual diagnostics.
 In a side result, they also imply that PCA+VR is able to estimate factor scores even if the latent factors are correlated.
 In our commentary *"New Insights into PCA + Varimax for Psychological Researchers"*, we briefly discuss some implications of these results for psychological research and note that the suggested diagnostics of “radial streaks” might give less clear results in typical psychological applications.
-The commentary includes extensive electronic supplemental materials, with a data example and a small simulation on estimating correlated factors, that can be found at <https://osf.io/5symf/>.
+The commentary includes extensive electronic supplemental materials, including a data example and a small simulation on estimating correlated factors, that can be found at <https://osf.io/5symf/>.
 
 In the current electronic supplementary materials, we present i) an exemplary data analysis that is discussed in our comment, and ii) a small simulation demonstrating the ability of PCA+VR to estimate correlated factors.
 
@@ -51,7 +51,7 @@ For the following demonstration, we use the publicly available *PhoneStudy* beha
 The *PhoneStudy* collected i) self-reported questionnaire data of personality traits measured with the German Big Five Structure Inventory [BFSI\; 5 factors and 30 facets, @arendasy_manual_2011], ii) demographic variables (age, gender, education), and iii) behavioral data from smartphone sensing (e.g., communication & social behavior, app-usage, music consumption, overall phone usage, day-nighttime activity), bundled from several smaller studies.
 The mobile sensing data was recorded for up to 30 days on the personal smartphone of study volunteers.
 
-Item responses to the personality questionnaire are contained in the file *Items.csv* while aggregated smartphone sensing variables are contained in the file *clusterdata.RDS*.
+Item responses to the personality questionnaire are contained in the file *datasets/Items.csv* while aggregated smartphone sensing variables are contained in the file *datasets/clusterdata.RDS*.
 Both can be downloaded from <https://osf.io/fxv3k/download>.
 We include copies of the aggregated datasets in our project repository for convenience.
 More details on the *PhoneStudy* data can be found in @stachl2020predicting.
