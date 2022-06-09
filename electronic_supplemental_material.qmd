@@ -3,12 +3,12 @@ title: "Electronic Supplemental Material: New Insights into PCA + Varimax for Ps
 subtitle: "A short commentary on Rohe & Zeng (2022)"
 author:
   - name: Florian Pargent
-    affiliation: LMU Munich, Germany
+    affiliation: LMU Munich
   - name: David Goretzko
-    affiliation: Leipzig University, Germany
+    affiliation: Leipzig University
   - name: Timo von Oertzen
-    affiliation: Bundeswehr University Munich, Germany
-date: 2022-06-08
+    affiliation: Bundeswehr University Munich, Max Planck Institute for Human Development
+date: 2022-06-09
 format: 
   html:
     toc: true
