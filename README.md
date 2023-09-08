@@ -4,6 +4,9 @@ Online repository of a commentary published in the journal *Royal Statistical So
 
 *Pargent, F., Goretzko, D. & von Oertzen, T. (2023). Florian Pargent, David Goretzko and Timo von Oertzen’s contribution to the Discussion of “Vintage Factor Analysis with Varimax Performs Statistical Inference” by Rohe & Zeng. Journal of the Royal Statistical Society Series B: Statistical Methodology, qkad054, https://doi.org/10.1093/jrsssb/qkad054*
 
+The electronic supplemental materials (the content of the electronic_supplemental_materials.html file) are hosted online at:  
+https://florianpargent.github.io/pca_varimax_commentary/
+
 ### Abstract
 
 In their paper *“Vintage factor analysis with varimax performs statistical inference”*, Rohe and Zeng (R&Z; Rohe & Zeng, 2023) demonstrate the usefulness of principal component analysis with varimax rotation (PCA+VR), a combination they call *vintage factor analysis*.
